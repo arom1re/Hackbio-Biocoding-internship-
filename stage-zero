@@ -1,0 +1,50 @@
+# Stage zero Task
+This project involved using any programming language of choice (mine was R) to organize basic information about oneself via data structure.
+
+## Explanation of Code
+The code consists of the following steps:
+
+**Assigning values to variables:**
+- My name was assigned to a variable
+- My slack username was assigned to a variable
+- My email address was assigned to a variable
+- My hobby was assigned to a variable
+- My country was assigned to a variable
+- My discipline was assigned to a variable
+- My programming language of choice was assigned to a variable
+
+**Printing the variables:**
+- I used the print(variable) function to print those variables
+
+name <- "Rashid"
+print(name)
+
+slack_username <- "Rashid"
+print(slack_username)
+
+Email <- "olrsule@gmail.com"
+print(Email)
+
+Hobby <- "Hiking"
+print(Hobby)
+
+Country <- "Benin"
+print(Country)
+
+Discipline <- "Molecular and Cell Biology"
+print(Discipline)
+
+Program.lang <- "R"
+print(Program.lang)
+
+## Output
+Rashid
+Rashid
+olrsule@gmail.com
+Hiking
+Benin
+Molecular and Cell Biology
+R
+
+
+
