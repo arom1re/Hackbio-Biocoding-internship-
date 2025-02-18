@@ -1,0 +1,135 @@
+Stage 1 Task
+# Function for translating DNA to protein
+dna_sequence <- "ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"
+
+translate_DNA_to_protein <- function(dna_sequence) {
+  # Convert DNA to RNA (Replace T with U)
+  rna_sequence <- gsub("T", "U", dna_sequence)
+  
+  # Define the genetic code as a dictionary
+  codon_table <- list(
+    "UUU" = "F", "UUC" = "F", "UUA" = "L", "UUG" = "L",
+    "CUU" = "L", "CUC" = "L", "CUA" = "L", "CUG" = "L",
+    "AUU" = "I", "AUC" = "I", "AUA" = "I", "AUG" = "M",
+    "GUU" = "V", "GUC" = "V", "GUA" = "V", "GUG" = "V",
+    "UCU" = "S", "UCC" = "S", "UCA" = "S", "UCG" = "S",
+    "CCU" = "P", "CCC" = "P", "CCA" = "P", "CCG" = "P",
+    "ACU" = "T", "ACC" = "T", "ACA" = "T", "ACG" = "T",
+    "GCU" = "A", "GCC" = "A", "GCA" = "A", "GCG" = "A",
+    "UAU" = "Y", "UAC" = "Y", "UAA" = "*", "UAG" = "*",
+    "CAU" = "H", "CAC" = "H", "CAA" = "Q", "CAG" = "Q",
+    "AAU" = "N", "AAC" = "N", "AAA" = "K", "AAG" = "K",
+    "GAU" = "D", "GAC" = "D", "GAA" = "E", "GAG" = "E",
+    "UGU" = "C", "UGC" = "C", "UGA" = "*", "UGG" = "W",
+    "CGU" = "R", "CGC" = "R", "CGA" = "R", "CGG" = "R",
+    "AGU" = "S", "AGC" = "S", "AGA" = "R", "AGG" = "R",
+    "GGU" = "G", "GGC" = "G", "GGA" = "G", "GGG" = "G"
+  )
+  
+  # Split RNA sequence into codons (triplets)
+  codons <- strsplit(rna_sequence, "")[[1]]
+  codons <- paste0(codons[c(TRUE, TRUE, TRUE)], codons[c(FALSE, TRUE, TRUE)], codons[c(FALSE, FALSE, TRUE)])
+  
+  # Translate codons into amino acids
+  protein_sequence <- sapply(codons, function(codon) codon_table[[codon]], USE.NAMES = FALSE)
+  
+  # Collapse the amino acids into a protein string
+  protein <- paste(protein_sequence, collapse = "")
+  
+  return(protein)
+}
+
+# Example Usage
+translate_DNA_to_protein("ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG")
+----------------------------------------------------------------------------------------------------------------------------------
+Logistic Growth Curve
+
+simulate_growth_curve <- function(time_steps = 100, K = 1000, N0 = 10, r = 0.2) {
+  # Randomize lag and exponential phase durations
+  lag_phase <- sample(5:15, 1)  # Random lag phase duration
+  exponential_phase <- sample(20:40, 1)  # Random exponential phase duration
+  
+  time <- seq(0, time_steps, by = 1)
+  population <- numeric(length(time))
+  
+  for (i in 1:length(time)) {
+    t <- time[i]
+    
+    if (t < lag_phase) {
+      # Lag phase: No growth, cells adjusting
+      population[i] <- N0
+    } else if (t < (lag_phase + exponential_phase)) {
+      # Exponential phase: Logistic growth
+      adjusted_t <- t - lag_phase
+      population[i] <- K / (1 + ((K - N0) / N0) * exp(-r * adjusted_t))
+    } else {
+      # Stationary & Decline phase: Population stabilizes and slightly declines
+      population[i] <- K * exp(-0.01 * (t - (lag_phase + exponential_phase)))
+    }
+  }
+  
+  return(data.frame(Time = time, Population = population))
+}
+
+# Example: Generate one growth curve
+growth_curve <- simulate_growth_curve()
+print(head(growth_curve))
+
+# Generate 100 different growth curves
+library(dplyr)
+
+growth_curves <- bind_rows(lapply(1:100, function(i) {
+  df <- simulate_growth_curve()
+  df$Curve_ID <- i  # Add an identifier for each growth curve
+  return(df)
+}))
+
+print(head(growth_curves))
+
+# Plot the Growth Curve
+
+library(ggplot2)
+
+ggplot(growth_curves, aes(x = Time, y = Population, group = Curve_ID, color = as.factor(Curve_ID))) +
+  geom_line(alpha = 0.3) +
+  labs(title = "Simulated Logistic Growth Curves", x = "Time", y = "Population Size") +
+  theme_minimal() +
+  theme(legend.position = "none")  # Hide legend for clarity
+
+ # Function to Calculate Time to Reach 80% of Carrying Capacity
+
+time_to_80_percent_K <- function(K = 1000, N0 = 10, r = 0.2) {
+  # Compute the time required to reach 80% of K
+  t_80 <- -log((K - N0) / (0.8 * K - N0)) / r
+  return(t_80)
+}
+
+# Example Usage
+t_80 <- time_to_80_percent_K(K = 1000, N0 = 10, r = 0.2)
+print(paste("Time to reach 80% of carrying capacity:", round(t_80, 2), "time units"))
+
+# Function to compute hamming distance
+
+hamming_distance <- function(str1, str2) {
+  # Make both strings the same length by padding with spaces
+  max_length <- max(nchar(str1), nchar(str2))
+  str1 <- sprintf("%-*s", max_length, str1)
+  str2 <- sprintf("%-*s", max_length, str2)
+  
+  # Split strings into characters
+  str1_chars <- strsplit(str1, "")[[1]]
+  str2_chars <- strsplit(str2, "")[[1]]
+  
+  # Compute Hamming Distance
+  distance <- sum(str1_chars != str2_chars)
+  
+  return(distance)
+}
+
+# Example Usage
+slack_username <- "Rashid"  # Slack username
+twitter_handle <- "Rashid_1"    # Twitter handle
+
+hamming_dist <- hamming_distance(slack_username, twitter_handle)
+print(paste("Hamming Distance:", hamming_dist))
+
